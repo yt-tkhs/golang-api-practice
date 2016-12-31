@@ -24,16 +24,22 @@ func init() {
 	}
 }
 
-func GetAllNote() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		notesSlice := make([]types.Note, 0, len(notes))
+func InitNotes(group echo.Group, prefix string) {
+	notes := group.Group(prefix)
 
-		for _, value := range notes {
-			notesSlice = append(notesSlice, value)
-		}
+	notes.GET("", GetAllNote)
+	notes.GET("/:id", GetNote)
+	notes.POST("", CreateNote)
+}
 
-		return c.JSON(http.StatusOK, notesSlice)
+func GetAllNote(c echo.Context) error {
+	notesSlice := make([]types.Note, 0, len(notes))
+
+	for _, value := range notes {
+		notesSlice = append(notesSlice, value)
 	}
+
+	return c.JSON(http.StatusOK, notesSlice)
 }
 
 func GetNote(c echo.Context) error {
