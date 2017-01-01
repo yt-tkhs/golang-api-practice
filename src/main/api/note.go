@@ -3,14 +3,19 @@ package api
 import (
 	"github.com/labstack/echo"
 	"net/http"
-	"main/types"
 	"strconv"
 )
 
-var notes map[int]types.Note
+type Note struct {
+	Id int `json:"id"`
+	Title string `json:"name"`
+	Content string `json:"content"`
+}
+
+var notes map[int]Note
 
 func init() {
-	notes = map[int]types.Note {
+	notes = map[int]Note {
 		1: {
 			Id: 1,
 			Title: "Note1",
@@ -33,7 +38,7 @@ func InitNotes(group echo.Group, prefix string) {
 }
 
 func GetAllNote(c echo.Context) error {
-	notesSlice := make([]types.Note, 0, len(notes))
+	notesSlice := make([]Note, 0, len(notes))
 
 	for _, value := range notes {
 		notesSlice = append(notesSlice, value)
@@ -52,7 +57,7 @@ func GetNote(c echo.Context) error {
 }
 
 func CreateNote(c echo.Context) error {
-	note := new(types.Note)
+	note := new(Note)
 	if err := c.Bind(note); err != nil {
 		return err
 	}
